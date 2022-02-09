@@ -3,13 +3,14 @@
   "compilerOptions": {
     "outDir": "./dist",
     "module": "CommonJS",
-    "target": "es2021",
+    "target": "ES2020",
     "esModuleInterop": true,
     "allowJs": true,
     "strictNullChecks": true,
     "paths": {
       "@domain/*": ["./src/domain/*"],
-      "@db-models/*": [""],
+      "@errors": ["./src/presentation/errors/index.ts"],
+      "@http-helpers": ["./src/presentation/helpers/http/http-helper.ts"],
       "@models/*": ["./src/domain/protocols/models/*"],
       "@presentation/*": ["./src/presentation/*"],
       "@signup-protocols": ["./src/presentation/protocols/signup/signup-controller-protocols.ts"],
