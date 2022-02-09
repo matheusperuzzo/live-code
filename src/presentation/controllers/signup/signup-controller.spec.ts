@@ -1,3 +1,4 @@
+import { badRequest } from '../../helpers/http-helper'
 import { SignUpController } from './signup-controller'
 
 describe('SignUp Controller', () => {
@@ -15,8 +16,7 @@ describe('SignUp Controller', () => {
       }
     }
     const httpResponse = await sut.handle(httpRequest)
-    expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual(new Error('Missing param: name'))
+    expect(httpResponse).toEqual(badRequest('name'))
   })
 
   test('Should return 400 if no email is provided', async () => {
@@ -33,8 +33,7 @@ describe('SignUp Controller', () => {
       }
     }
     const httpResponse = await sut.handle(httpRequest)
-    expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual(new Error('Missing param: email'))
+    expect(httpResponse).toEqual(badRequest('email'))
   })
 
   test('Should return 400 if no password is provided', async () => {
@@ -51,7 +50,6 @@ describe('SignUp Controller', () => {
       }
     }
     const httpResponse = await sut.handle(httpRequest)
-    expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body).toEqual(new Error('Missing param: password'))
+    expect(httpResponse).toEqual(badRequest('password'))
   })
 })

@@ -1,3 +1,4 @@
+import { badRequest } from '../../helpers/http-helper'
 import { HttpRequest, httpResponse } from '../../protocols/http/http'
 
 export class SignUpController {
@@ -5,10 +6,7 @@ export class SignUpController {
     const requiredFields = ['name', 'email', 'password']
     for (const field of requiredFields) {
       if (!httpRequest.body[field]) {
-        return {
-          statusCode: 400,
-          body: new Error(`Missing param: ${field}`)
-        }
+        return badRequest(field)
       }
     }
     return {
