@@ -271,4 +271,23 @@ describe('SignUp Controller', () => {
     await sut.handle(httpRequest)
     expect(isTelephoneValidSpy).toHaveBeenCalledWith('valid_telephone')
   })
+
+  test('Should return 400 if TelephoneValidator validation fails', async () => {
+    const { sut, telephoneValidatorStub } = makeSut()
+    jest.spyOn(telephoneValidatorStub, 'isTelephoneValid').mockReturnValueOnce(new Promise(resolve => resolve(false)))
+    const httpRequest = {
+      body: {
+        name: 'any_name',
+        email: 'invalid_email@mail.com',
+        password: 'any_password',
+        passwordConfirmation: 'any_password',
+        telephone: 'any_telephone',
+        birthDate: 'any_birth_date',
+        mothersName: 'any_mothers_name',
+        cpf: 'any_cpf'
+      }
+    }
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse).toEqual(badRequest(new InvalidParamError('telephone')))
+  })
 })
