@@ -1,7 +1,10 @@
+import { AddAccount } from '../../../domain/account/add-account'
+import { AccountModel, AddAccountModel } from '../../../domain/protocols/models/account'
 import { InvalidParamError } from '../../errors/invalid-param-error'
 import { MissingParamError } from '../../errors/missing-param-error'
 import { ServerError } from '../../errors/server-error'
 import { badRequest, serverError } from '../../helpers/http-helper'
+import { HttpRequest } from '../../protocols/http/http'
 import { CpfValidator } from '../../protocols/validators/cpf-validator'
 import { EmailValidator } from '../../protocols/validators/email-validator'
 import { TelephoneValidator } from '../../protocols/validators/telephone-validator'
@@ -34,16 +37,36 @@ const makeCpfValidator = (): CpfValidator => {
   return new CpfValidatorStub()
 }
 
+const makeAddAccount = (): AddAccount => {
+  class AddAccountStub implements AddAccount {
+    async add (accoutData: AddAccountModel): Promise<AccountModel> {
+      return await new Promise(resolve => resolve({
+        id: 0,
+        name: 'valid_name',
+        email: 'valid_email@mail.com',
+        password: 'valid_password',
+        telephone: 'valid_telephone',
+        birthDate: new Date(),
+        mothersName: 'valid_mothers_name',
+        cpf: 'valid_cpf'
+      }))
+    }
+  }
+  return new AddAccountStub()
+}
+
 const makeSut = (): SutTypes => {
   const emailValidatorStub = makeEmailValidator()
   const telephoneValidatorStub = makeTelephoneValidator()
   const cpfValidatorStub = makeCpfValidator()
-  const sut = new SignUpController(emailValidatorStub, telephoneValidatorStub, cpfValidatorStub)
+  const addAccountStub = makeAddAccount()
+  const sut = new SignUpController(emailValidatorStub, telephoneValidatorStub, cpfValidatorStub, addAccountStub)
   return {
     sut,
     emailValidatorStub,
     telephoneValidatorStub,
-    cpfValidatorStub
+    cpfValidatorStub,
+    addAccountStub
   }
 }
 
@@ -52,7 +75,21 @@ interface SutTypes {
   emailValidatorStub: EmailValidator
   telephoneValidatorStub: TelephoneValidator
   cpfValidatorStub: CpfValidator
+  addAccountStub: AddAccount
 }
+
+const makeFakeRequest = (): HttpRequest => ({
+  body: {
+    name: 'valid_name',
+    email: 'valid_email@mail.com',
+    password: 'valid_password',
+    passwordConfirmation: 'valid_password',
+    telephone: 'valid_telephone',
+    birthDate: 'valid_birth_date',
+    mothersName: 'valid_mothers_name',
+    cpf: 'valid_cpf'
+  }
+})
 
 describe('SignUp Controller', () => {
   test('Should return 400 if no name is provided', async () => {
@@ -408,5 +445,21 @@ describe('SignUp Controller', () => {
     }
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse).toEqual(serverError(new ServerError('')))
+  })
+
+  test('Should call AddAccount with valid data', async () => {
+    const { sut, addAccountStub } = makeSut()
+    const addSpy = jest.spyOn(addAccountStub, 'add')
+    const httpRequest = makeFakeRequest()
+    await sut.handle(httpRequest)
+    expect(addSpy).toHaveBeenCalledWith({
+      name: 'valid_name',
+      email: 'valid_email@mail.com',
+      password: 'valid_password',
+      telephone: 'valid_telephone',
+      birthDate: 'valid_birth_date',
+      mothersName: 'valid_mothers_name',
+      cpf: 'valid_cpf'
+    })
   })
 })
