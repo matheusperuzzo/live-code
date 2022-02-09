@@ -1,5 +1,4 @@
 {
-  "extends": "./tsconfig.paths.json",
   "compilerOptions": {
     "outDir": "./dist",
     "module": "CommonJS",
@@ -9,12 +8,16 @@
     "strictNullChecks": true,
     "paths": {
       "@domain/*": ["./src/domain/*"],
+      "@cpf-validator": ["./src/presentation/protocols/validators/cpf-validator.ts"],
+      "@email-validator": ["./src/presentation/protocols/validators/email-validator.ts"],
       "@errors": ["./src/presentation/errors/index.ts"],
       "@http-helpers": ["./src/presentation/helpers/http/http-helper.ts"],
       "@models/*": ["./src/domain/protocols/models/*"],
       "@presentation/*": ["./src/presentation/*"],
       "@signup-protocols": ["./src/presentation/protocols/signup/signup-controller-protocols.ts"],
-      "@root/*": ["./*"]
+      "@telephone-validator": ["./src/presentation/protocols/validators/telephone-validator.ts"],
+      "@root/*": ["./*"],
+      "@validator-protocols": ["./src/presentation/protocols/validators/index.ts"]
     }
   },
   "include": ["src/**/*.ts"],
