@@ -1,14 +1,9 @@
-import { AddAccount } from '../../../domain/account/add-account'
-import { AccountModel, AddAccountModel } from '../../../domain/protocols/models/account'
-import { InvalidParamError } from '../../errors/invalid-param-error'
-import { MissingParamError } from '../../errors/missing-param-error'
-import { ServerError } from '../../errors/server-error'
-import { badRequest, serverError } from '../../helpers/http/http-helper'
-import { HttpRequest } from '../../protocols/http'
-import { CpfValidator } from '../../protocols/validators/cpf-validator'
-import { EmailValidator } from '../../protocols/validators/email-validator'
-import { TelephoneValidator } from '../../protocols/validators/telephone-validator'
 import { SignUpController } from './signup-controller'
+import { badRequest, serverError } from '@presentation/helpers/http/http-helper'
+import { InvalidParamError, MissingParamError, ServerError } from '@presentation/errors/index'
+import { CpfValidator, EmailValidator, HttpRequest, TelephoneValidator } from '@signup-protocols'
+import { AddAccount } from '@domain/account/add-account'
+import { AccountModel, AddAccountModel } from '@models/account'
 
 const makeEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {

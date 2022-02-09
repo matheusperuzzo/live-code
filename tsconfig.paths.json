@@ -4,7 +4,8 @@
     "paths": {
       "@domain/*": ["./src/domain/*"],
       "@presentation/*": ["./src/presentation/*"],
+      "@signup-protocols": ["./src/presentation/protocols/signup/signup-controller-protocols.ts"],
       "@root/*": ["./*"]
-    }
+    },
   }
 }

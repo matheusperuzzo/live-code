@@ -9,7 +9,11 @@
     "strictNullChecks": true,
     "paths": {
       "@domain/*": ["./src/domain/*"],
-      "@presentation/*": ["./src/presentation/*"]
+      "@db-models/*": [""],
+      "@models/*": ["./src/domain/protocols/models/*"],
+      "@presentation/*": ["./src/presentation/*"],
+      "@signup-protocols": ["./src/presentation/protocols/signup/signup-controller-protocols.ts"],
+      "@root/*": ["./*"]
     }
   },
   "include": ["src/**/*.ts"],
