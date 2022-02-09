@@ -1,6 +1,6 @@
 import { SignUpController } from './signup-controller'
-import { badRequest, serverError } from '@presentation/helpers/http/http-helper'
-import { InvalidParamError, MissingParamError, ServerError } from '@presentation/errors/index'
+import { badRequest, ok, serverError } from '@http-helpers'
+import { InvalidParamError, MissingParamError, ServerError } from '@errors'
 import { CpfValidator, EmailValidator, HttpRequest, TelephoneValidator } from '@signup-protocols'
 import { AddAccount } from '@domain/account/add-account'
 import { AccountModel, AddAccountModel } from '@models/account'
@@ -35,20 +35,32 @@ const makeCpfValidator = (): CpfValidator => {
 const makeAddAccount = (): AddAccount => {
   class AddAccountStub implements AddAccount {
     async add (accoutData: AddAccountModel): Promise<AccountModel> {
-      return await new Promise(resolve => resolve({
-        id: 0,
-        name: 'valid_name',
-        email: 'valid_email@mail.com',
-        password: 'valid_password',
-        telephone: 'valid_telephone',
-        birthDate: new Date(),
-        mothersName: 'valid_mothers_name',
-        cpf: 'valid_cpf'
-      }))
+      return await new Promise(resolve => resolve(makeFakeAccount()))
     }
   }
   return new AddAccountStub()
 }
+
+const makeFakeAddAccount = (): AddAccountModel => ({
+  name: 'valid_name',
+  email: 'valid_email@mail.com',
+  password: 'valid_password',
+  telephone: 'valid_telephone',
+  birthDate: 'valid_birth_date',
+  mothersName: 'valid_mothers_name',
+  cpf: 'valid_cpf'
+})
+
+const makeFakeAccount = (): AccountModel => ({
+  id: 0,
+  name: 'valid_name',
+  email: 'valid_email@mail.com',
+  password: 'valid_password',
+  telephone: 'valid_telephone',
+  birthDate: new Date(),
+  mothersName: 'valid_mothers_name',
+  cpf: 'valid_cpf'
+})
 
 const makeSut = (): SutTypes => {
   const emailValidatorStub = makeEmailValidator()
@@ -447,15 +459,7 @@ describe('SignUp Controller', () => {
     const addSpy = jest.spyOn(addAccountStub, 'add')
     const httpRequest = makeFakeRequest()
     await sut.handle(httpRequest)
-    expect(addSpy).toHaveBeenCalledWith({
-      name: 'valid_name',
-      email: 'valid_email@mail.com',
-      password: 'valid_password',
-      telephone: 'valid_telephone',
-      birthDate: 'valid_birth_date',
-      mothersName: 'valid_mothers_name',
-      cpf: 'valid_cpf'
-    })
+    expect(addSpy).toHaveBeenCalledWith(makeFakeAddAccount())
   })
 
   test('Should return 500 if AddAccount throws', async () => {
@@ -480,5 +484,12 @@ describe('SignUp Controller', () => {
     }
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse).toEqual(serverError(new ServerError('')))
+  })
+
+  test('Should return 200 on success', async () => {
+    const { sut } = makeSut()
+    const httpRequest = makeFakeRequest()
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse).toEqual(ok(makeFakeAccount()))
   })
 })
