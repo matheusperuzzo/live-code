@@ -462,4 +462,28 @@ describe('SignUp Controller', () => {
       cpf: 'valid_cpf'
     })
   })
+
+  test('Should return 500 if AddAccount throws', async () => {
+    const { sut, addAccountStub } = makeSut()
+    jest.spyOn(addAccountStub, 'add')
+      .mockReturnValueOnce(
+        new Promise(
+          (resolve, reject) => reject(new Error(''))
+        )
+      )
+    const httpRequest = {
+      body: {
+        name: 'any_name',
+        email: 'any_email@mail.com',
+        password: 'any_password',
+        passwordConfirmation: 'any_password',
+        telephone: 'any_telephone',
+        birthDate: 'any_birth_date',
+        mothersName: 'any_mothers_name',
+        cpf: 'any_cpf'
+      }
+    }
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse).toEqual(serverError(new ServerError('')))
+  })
 })
