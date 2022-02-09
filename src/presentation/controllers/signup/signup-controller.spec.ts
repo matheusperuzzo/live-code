@@ -2,6 +2,7 @@ import { InvalidParamError } from '../../errors/invalid-param-error'
 import { MissingParamError } from '../../errors/missing-param-error'
 import { ServerError } from '../../errors/server-error'
 import { badRequest, serverError } from '../../helpers/http-helper'
+import { CpfValidator } from '../../protocols/validators/cpf-validator'
 import { EmailValidator } from '../../protocols/validators/email-validator'
 import { TelephoneValidator } from '../../protocols/validators/telephone-validator'
 import { SignUpController } from './signup-controller'
@@ -24,14 +25,25 @@ const makeTelephoneValidator = (): TelephoneValidator => {
   return new TelephoneValidatorStub()
 }
 
+const makeCpfValidator = (): CpfValidator => {
+  class CpfValidatorStub implements CpfValidator {
+    async isCpfValid (cpf: string): Promise<boolean> {
+      return await new Promise(resolve => resolve(true))
+    }
+  }
+  return new CpfValidatorStub()
+}
+
 const makeSut = (): SutTypes => {
   const emailValidatorStub = makeEmailValidator()
   const telephoneValidatorStub = makeTelephoneValidator()
-  const sut = new SignUpController(emailValidatorStub, telephoneValidatorStub)
+  const cpfValidatorStub = makeCpfValidator()
+  const sut = new SignUpController(emailValidatorStub, telephoneValidatorStub, cpfValidatorStub)
   return {
     sut,
     emailValidatorStub,
-    telephoneValidatorStub
+    telephoneValidatorStub,
+    cpfValidatorStub
   }
 }
 
@@ -39,6 +51,7 @@ interface SutTypes {
   sut: SignUpController
   emailValidatorStub: EmailValidator
   telephoneValidatorStub: TelephoneValidator
+  cpfValidatorStub: CpfValidator
 }
 
 describe('SignUp Controller', () => {
@@ -328,5 +341,24 @@ describe('SignUp Controller', () => {
     }
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse).toEqual(serverError(new ServerError('')))
+  })
+
+  test('Should call CpfValidator with valid cpf', async () => {
+    const { sut, cpfValidatorStub } = makeSut()
+    const isCpfValidSpy = jest.spyOn(cpfValidatorStub, 'isCpfValid')
+    const httpRequest = {
+      body: {
+        name: 'any_name',
+        email: 'any_email@mail.com',
+        password: 'any_password',
+        passwordConfirmation: 'any_password',
+        telephone: 'any_telephone',
+        birthDate: 'any_birth_date',
+        mothersName: 'any_mothers_name',
+        cpf: 'valid_cpf'
+      }
+    }
+    await sut.handle(httpRequest)
+    expect(isCpfValidSpy).toHaveBeenCalledWith('valid_cpf')
   })
 })
