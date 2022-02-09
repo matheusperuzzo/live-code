@@ -3,7 +3,7 @@ import validator from 'validator'
 
 export class TelephoneValidatorAdapter implements TelephoneValidator {
   async isTelephoneValid (telephone: string): Promise<boolean> {
-    validator.isMobilePhone(telephone)
-    return await new Promise(resolve => resolve(false))
+    const isValid = validator.isMobilePhone(telephone)
+    return isValid
   }
 }
