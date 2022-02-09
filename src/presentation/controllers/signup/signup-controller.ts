@@ -42,7 +42,10 @@ export class SignUpController {
       if (!isTelephoneValid) {
         return badRequest(new InvalidParamError('telephone'))
       }
-      await this.cpfValidator.isCpfValid(httpRequest.body.cpf)
+      const isCpfValid = await this.cpfValidator.isCpfValid(httpRequest.body.cpf)
+      if (!isCpfValid) {
+        return badRequest(new InvalidParamError('cpf'))
+      }
       return {
         statusCode: 0,
         body: null
