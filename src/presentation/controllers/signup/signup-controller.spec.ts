@@ -1,9 +1,13 @@
 import { badRequest } from '../../helpers/http-helper'
 import { SignUpController } from './signup-controller'
 
+const makeSut = (): SignUpController => {
+  return new SignUpController()
+}
+
 describe('SignUp Controller', () => {
   test('Should return 400 if no name is provided', async () => {
-    const sut = new SignUpController()
+    const sut = makeSut()
     const httpRequest = {
       body: {
         email: 'any_email@mail.com',
@@ -20,7 +24,7 @@ describe('SignUp Controller', () => {
   })
 
   test('Should return 400 if no email is provided', async () => {
-    const sut = new SignUpController()
+    const sut = makeSut()
     const httpRequest = {
       body: {
         name: 'any_name',
@@ -37,7 +41,7 @@ describe('SignUp Controller', () => {
   })
 
   test('Should return 400 if no password is provided', async () => {
-    const sut = new SignUpController()
+    const sut = makeSut()
     const httpRequest = {
       body: {
         name: 'any_name',
@@ -54,7 +58,7 @@ describe('SignUp Controller', () => {
   })
 
   test('Should return 400 if no passwordConfirmation is provided', async () => {
-    const sut = new SignUpController()
+    const sut = makeSut()
     const httpRequest = {
       body: {
         name: 'any_name',
@@ -71,7 +75,7 @@ describe('SignUp Controller', () => {
   })
 
   test('Should return 400 if no telephone is provided', async () => {
-    const sut = new SignUpController()
+    const sut = makeSut()
     const httpRequest = {
       body: {
         name: 'any_name',
@@ -88,7 +92,7 @@ describe('SignUp Controller', () => {
   })
 
   test('Should return 400 if no birthDate is provided', async () => {
-    const sut = new SignUpController()
+    const sut = makeSut()
     const httpRequest = {
       body: {
         name: 'any_name',
@@ -105,7 +109,7 @@ describe('SignUp Controller', () => {
   })
 
   test('Should return 400 if no mothersName is provided', async () => {
-    const sut = new SignUpController()
+    const sut = makeSut()
     const httpRequest = {
       body: {
         name: 'any_name',
@@ -122,7 +126,7 @@ describe('SignUp Controller', () => {
   })
 
   test('Should return 400 if no cpf is provided', async () => {
-    const sut = new SignUpController()
+    const sut = makeSut()
     const httpRequest = {
       body: {
         name: 'any_name',
