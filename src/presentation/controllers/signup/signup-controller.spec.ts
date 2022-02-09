@@ -199,7 +199,12 @@ describe('SignUp Controller', () => {
 
   test('Should return 400 if EmailValidator validation fails', async () => {
     const { sut, emailValidatorStub } = makeSut()
-    jest.spyOn(emailValidatorStub, 'isEmailValid').mockReturnValueOnce(new Promise(resolve => resolve(false)))
+    jest.spyOn(emailValidatorStub, 'isEmailValid')
+      .mockReturnValueOnce(
+        new Promise(
+          resolve => resolve(false)
+        )
+      )
     const httpRequest = {
       body: {
         name: 'any_name',
@@ -218,11 +223,16 @@ describe('SignUp Controller', () => {
 
   test('Should return 500 if EmailValidator throws', async () => {
     const { sut, emailValidatorStub } = makeSut()
-    jest.spyOn(emailValidatorStub, 'isEmailValid').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error(''))))
+    jest.spyOn(emailValidatorStub, 'isEmailValid')
+      .mockReturnValueOnce(
+        new Promise(
+          (resolve, reject) => reject(new Error(''))
+        )
+      )
     const httpRequest = {
       body: {
         name: 'any_name',
-        email: 'invalid_email@mail.com',
+        email: 'any_email@mail.com',
         password: 'any_password',
         passwordConfirmation: 'any_password',
         telephone: 'any_telephone',
@@ -274,11 +284,40 @@ describe('SignUp Controller', () => {
 
   test('Should return 400 if TelephoneValidator validation fails', async () => {
     const { sut, telephoneValidatorStub } = makeSut()
-    jest.spyOn(telephoneValidatorStub, 'isTelephoneValid').mockReturnValueOnce(new Promise(resolve => resolve(false)))
+    jest.spyOn(telephoneValidatorStub, 'isTelephoneValid')
+      .mockReturnValueOnce(
+        new Promise(
+          resolve => resolve(false)
+        )
+      )
     const httpRequest = {
       body: {
         name: 'any_name',
-        email: 'invalid_email@mail.com',
+        email: 'any_email@mail.com',
+        password: 'any_password',
+        passwordConfirmation: 'any_password',
+        telephone: 'invalid_telephone',
+        birthDate: 'any_birth_date',
+        mothersName: 'any_mothers_name',
+        cpf: 'any_cpf'
+      }
+    }
+    const httpResponse = await sut.handle(httpRequest)
+    expect(httpResponse).toEqual(badRequest(new InvalidParamError('telephone')))
+  })
+
+  test('Should return 500 if TelephoneValidator throws', async () => {
+    const { sut, telephoneValidatorStub } = makeSut()
+    jest.spyOn(telephoneValidatorStub, 'isTelephoneValid')
+      .mockReturnValueOnce(
+        new Promise(
+          (resolve, reject) => reject(new Error(''))
+        )
+      )
+    const httpRequest = {
+      body: {
+        name: 'any_name',
+        email: 'any_email@mail.com',
         password: 'any_password',
         passwordConfirmation: 'any_password',
         telephone: 'any_telephone',
@@ -288,6 +327,6 @@ describe('SignUp Controller', () => {
       }
     }
     const httpResponse = await sut.handle(httpRequest)
-    expect(httpResponse).toEqual(badRequest(new InvalidParamError('telephone')))
+    expect(httpResponse).toEqual(serverError(new ServerError('')))
   })
 })
