@@ -1,3 +1,3 @@
 export * from '../controller'
 export * from '../http'
-export * from './validators/index'
+export * from '../validators/index'

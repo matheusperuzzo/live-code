@@ -1,4 +1,4 @@
-import { TelephoneValidator } from '@presentation/protocols/signup/validators'
+import { TelephoneValidator } from '@presentation/protocols/validators'
 import validator from 'validator'
 
 export class TelephoneValidatorAdapter implements TelephoneValidator {
