@@ -37,6 +37,7 @@
     "*.ts": "eslint --cache --fix"
   },
   "dependencies": {
+    "cpf-check": "^3.0.0",
     "validator": "^13.7.0"
   }
 }
