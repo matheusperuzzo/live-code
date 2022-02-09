@@ -1,14 +1,15 @@
 import { InvalidParamError } from '../../errors/invalid-param-error'
 import { MissingParamError } from '../../errors/missing-param-error'
 import { ServerError } from '../../errors/server-error'
-import { badRequest, serverError } from '../../helpers/http-helper'
-import { HttpRequest, HttpResponse } from '../../protocols/http/http'
+import { badRequest, serverError } from '../../helpers/http/http-helper'
+import { HttpRequest, HttpResponse } from '../../protocols/http'
 import { EmailValidator } from '../../protocols/validators/email-validator'
 import { TelephoneValidator } from '../../protocols/validators/telephone-validator'
 import { CpfValidator } from '../../protocols/validators/cpf-validator'
 import { AddAccount } from '../../../domain/account/add-account'
+import { Controller } from '../../protocols/controller'
 
-export class SignUpController {
+export class SignUpController implements Controller {
   constructor (
     private readonly emailValidator: EmailValidator,
     private readonly telephoneValidator: TelephoneValidator,
