@@ -8,4 +8,10 @@ describe('EmailValidator Adapter', () => {
     await sut.isEmailValid('valid_email@mail.com')
     expect(isEmailSpy).toHaveBeenCalledWith('valid_email@mail.com')
   })
+
+  test('should return false if validation fails', async () => {
+    const sut = new EmailValidatorAdapter()
+    const isEmailValid = await sut.isEmailValid('invalid_email@mail.com')
+    expect(isEmailValid).toBe(false)
+  })
 })
