@@ -3,6 +3,7 @@ import { MissingParamError } from '../../errors/missing-param-error'
 import { ServerError } from '../../errors/server-error'
 import { badRequest, serverError } from '../../helpers/http-helper'
 import { EmailValidator } from '../../protocols/validators/email-validator'
+import { TelephoneValidator } from '../../protocols/validators/telephone-validator'
 import { SignUpController } from './signup-controller'
 
 const makeEmailValidator = (): EmailValidator => {
@@ -14,18 +15,30 @@ const makeEmailValidator = (): EmailValidator => {
   return new EmailValidatorStub()
 }
 
+const makeTelephoneValidator = (): TelephoneValidator => {
+  class TelephoneValidatorStub implements TelephoneValidator {
+    async isTelephoneValid (telephone: string): Promise<boolean> {
+      return await new Promise(resolve => resolve(true))
+    }
+  }
+  return new TelephoneValidatorStub()
+}
+
 const makeSut = (): SutTypes => {
   const emailValidatorStub = makeEmailValidator()
-  const sut = new SignUpController(emailValidatorStub)
+  const telephoneValidatorStub = makeTelephoneValidator()
+  const sut = new SignUpController(emailValidatorStub, telephoneValidatorStub)
   return {
     sut,
-    emailValidatorStub
+    emailValidatorStub,
+    telephoneValidatorStub
   }
 }
 
 interface SutTypes {
   sut: SignUpController
   emailValidatorStub: EmailValidator
+  telephoneValidatorStub: TelephoneValidator
 }
 
 describe('SignUp Controller', () => {
@@ -37,7 +50,7 @@ describe('SignUp Controller', () => {
         password: 'any_password',
         passwordConfirmation: 'any_password',
         telephone: 'any_telephone',
-        birthDate: 'any_bith_date',
+        birthDate: 'any_birth_date',
         mothersName: 'any_mothers_name',
         cpf: 'any_cpf'
       }
@@ -54,7 +67,7 @@ describe('SignUp Controller', () => {
         password: 'any_password',
         passwordConfirmation: 'any_password',
         telephone: 'any_telephone',
-        birthDate: 'any_bith_date',
+        birthDate: 'any_birth_date',
         mothersName: 'any_mothers_name',
         cpf: 'any_cpf'
       }
@@ -71,7 +84,7 @@ describe('SignUp Controller', () => {
         email: 'any_email@mail.com',
         passwordConfirmation: 'any_password',
         telephone: 'any_telephone',
-        birthDate: 'any_bith_date',
+        birthDate: 'any_birth_date',
         mothersName: 'any_mothers_name',
         cpf: 'any_cpf'
       }
@@ -88,7 +101,7 @@ describe('SignUp Controller', () => {
         email: 'any_email@mail.com',
         password: 'any_password',
         telephone: 'any_telephone',
-        birthDate: 'any_bith_date',
+        birthDate: 'any_birth_date',
         mothersName: 'any_mothers_name',
         cpf: 'any_cpf'
       }
@@ -105,7 +118,7 @@ describe('SignUp Controller', () => {
         email: 'any_email@mail.com',
         password: 'any_password',
         passwordConfirmation: 'any_password',
-        birthDate: 'any_bith_date',
+        birthDate: 'any_birth_date',
         mothersName: 'any_mothers_name',
         cpf: 'any_cpf'
       }
@@ -140,7 +153,7 @@ describe('SignUp Controller', () => {
         password: 'any_password',
         passwordConfirmation: 'any_password',
         telephone: 'any_telephone',
-        birthDate: 'any_bith_date',
+        birthDate: 'any_birth_date',
         cpf: 'any_cpf'
       }
     }
@@ -157,7 +170,7 @@ describe('SignUp Controller', () => {
         password: 'any_password',
         passwordConfirmation: 'any_password',
         telephone: 'any_telephone',
-        birthDate: 'any_bith_date',
+        birthDate: 'any_birth_date',
         mothersName: 'any_mothers_name'
       }
     }
@@ -175,7 +188,7 @@ describe('SignUp Controller', () => {
         password: 'any_password',
         passwordConfirmation: 'any_password',
         telephone: 'any_telephone',
-        birthDate: 'any_bith_date',
+        birthDate: 'any_birth_date',
         mothersName: 'any_mothers_name',
         cpf: 'any_cpf'
       }
@@ -194,7 +207,7 @@ describe('SignUp Controller', () => {
         password: 'any_password',
         passwordConfirmation: 'any_password',
         telephone: 'any_telephone',
-        birthDate: 'any_bith_date',
+        birthDate: 'any_birth_date',
         mothersName: 'any_mothers_name',
         cpf: 'any_cpf'
       }
@@ -213,7 +226,7 @@ describe('SignUp Controller', () => {
         password: 'any_password',
         passwordConfirmation: 'any_password',
         telephone: 'any_telephone',
-        birthDate: 'any_bith_date',
+        birthDate: 'any_birth_date',
         mothersName: 'any_mothers_name',
         cpf: 'any_cpf'
       }
@@ -231,12 +244,31 @@ describe('SignUp Controller', () => {
         password: 'any_password',
         passwordConfirmation: 'other_password',
         telephone: 'any_telephone',
-        birthDate: 'any_bith_date',
+        birthDate: 'any_birth_date',
         mothersName: 'any_mothers_name',
         cpf: 'any_cpf'
       }
     }
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse).toEqual(badRequest(new InvalidParamError('passwordConfirmation')))
+  })
+
+  test('Should call TelephoneValidator with valid telephone', async () => {
+    const { sut, telephoneValidatorStub } = makeSut()
+    const isTelephoneValidSpy = jest.spyOn(telephoneValidatorStub, 'isTelephoneValid')
+    const httpRequest = {
+      body: {
+        name: 'any_name',
+        email: 'any_email@mail.com',
+        password: 'any_password',
+        passwordConfirmation: 'any_password',
+        telephone: 'valid_telephone',
+        birthDate: 'any_birth_date',
+        mothersName: 'any_mothers_name',
+        cpf: 'any_cpf'
+      }
+    }
+    await sut.handle(httpRequest)
+    expect(isTelephoneValidSpy).toHaveBeenCalledWith('valid_telephone')
   })
 })
