@@ -8,4 +8,10 @@ describe('CpfValidator Adapter', () => {
     await sut.isCpfValid('valid_cpf')
     expect(validateSpy).toHaveBeenCalledWith('valid_cpf')
   })
+
+  test('Should return false if validation fails', async () => {
+    const sut = new CpfValidatorAdapter()
+    const isValid = await sut.isCpfValid('invalid_cpf')
+    expect(isValid).toBe(false)
+  })
 })
