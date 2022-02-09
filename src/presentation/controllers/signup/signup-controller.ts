@@ -1,7 +1,10 @@
 import { badRequest } from '../../helpers/http-helper'
 import { HttpRequest, httpResponse } from '../../protocols/http/http'
+import { EmailValidator } from '../../protocols/validators/email-validator'
 
 export class SignUpController {
+  constructor (private readonly emailValidator: EmailValidator) {}
+
   async handle (httpRequest: HttpRequest): Promise<httpResponse> {
     const requiredFields = [
       'name',
@@ -18,6 +21,7 @@ export class SignUpController {
         return badRequest(field)
       }
     }
+    await this.emailValidator.isEmailValid(httpRequest.body.email)
     return {
       statusCode: 0,
       body: null
