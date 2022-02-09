@@ -5,11 +5,13 @@ import { badRequest, serverError } from '../../helpers/http-helper'
 import { HttpRequest, httpResponse } from '../../protocols/http/http'
 import { EmailValidator } from '../../protocols/validators/email-validator'
 import { TelephoneValidator } from '../../protocols/validators/telephone-validator'
+import { CpfValidator } from '../../protocols/validators/cpf-validator'
 
 export class SignUpController {
   constructor (
     private readonly emailValidator: EmailValidator,
-    private readonly telephoneValidator: TelephoneValidator
+    private readonly telephoneValidator: TelephoneValidator,
+    private readonly cpfValidator: CpfValidator
   ) {}
 
   async handle (httpRequest: HttpRequest): Promise<httpResponse> {
@@ -40,6 +42,7 @@ export class SignUpController {
       if (!isTelephoneValid) {
         return badRequest(new InvalidParamError('telephone'))
       }
+      await this.cpfValidator.isCpfValid(httpRequest.body.cpf)
       return {
         statusCode: 0,
         body: null
