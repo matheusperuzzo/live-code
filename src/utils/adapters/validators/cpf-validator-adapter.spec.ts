@@ -14,4 +14,11 @@ describe('CpfValidator Adapter', () => {
     const isValid = await sut.isCpfValid('invalid_cpf')
     expect(isValid).toBe(false)
   })
+
+  test('Should return true if validation succeeds', async () => {
+    const sut = new CpfValidatorAdapter()
+    jest.spyOn(CPF, 'validate').mockReturnValueOnce(true)
+    const isValid = await sut.isCpfValid('valid_cpf')
+    expect(isValid).toBe(true)
+  })
 })
