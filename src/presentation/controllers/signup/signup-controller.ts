@@ -36,7 +36,10 @@ export class SignUpController {
       if (httpRequest.body.password !== httpRequest.body.passwordConfirmation) {
         return badRequest(new InvalidParamError('passwordConfirmation'))
       }
-      await this.telephoneValidator.isTelephoneValid(httpRequest.body.telephone)
+      const isTelephoneValid = await this.telephoneValidator.isTelephoneValid(httpRequest.body.telephone)
+      if (!isTelephoneValid) {
+        return badRequest(new InvalidParamError('telephone'))
+      }
       return {
         statusCode: 0,
         body: null
