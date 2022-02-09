@@ -1,6 +1,6 @@
 import { InvalidParamError, MissingParamError, ServerError } from '@errors'
 import { Controller, CpfValidator, EmailValidator, HttpRequest, HttpResponse, TelephoneValidator } from '@signup-protocols'
-import { badRequest, serverError } from '@http-helpers'
+import { badRequest, ok, serverError } from '@http-helpers'
 import { AddAccount } from '@domain/account/add-account'
 
 export class SignUpController implements Controller {
@@ -52,7 +52,7 @@ export class SignUpController implements Controller {
         mothersName,
         cpf
       } = httpRequest.body
-      await this.addAccount.add({
+      const account = await this.addAccount.add({
         name,
         email,
         password,
@@ -61,10 +61,7 @@ export class SignUpController implements Controller {
         mothersName,
         cpf
       })
-      return {
-        statusCode: 0,
-        body: null
-      }
+      return ok(account)
     } catch (err) {
       return serverError(new ServerError(err))
     }

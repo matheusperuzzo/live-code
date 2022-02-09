@@ -14,3 +14,10 @@ export const serverError = (error: Error): HttpResponse => {
     body: new ServerError(error.stack ? error.stack : '')
   }
 }
+
+export const ok = (data: any): HttpResponse => {
+  return {
+    statusCode: 400,
+    body: data
+  }
+}
