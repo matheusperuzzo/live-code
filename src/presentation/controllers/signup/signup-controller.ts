@@ -2,19 +2,21 @@ import { InvalidParamError } from '../../errors/invalid-param-error'
 import { MissingParamError } from '../../errors/missing-param-error'
 import { ServerError } from '../../errors/server-error'
 import { badRequest, serverError } from '../../helpers/http-helper'
-import { HttpRequest, httpResponse } from '../../protocols/http/http'
+import { HttpRequest, HttpResponse } from '../../protocols/http/http'
 import { EmailValidator } from '../../protocols/validators/email-validator'
 import { TelephoneValidator } from '../../protocols/validators/telephone-validator'
 import { CpfValidator } from '../../protocols/validators/cpf-validator'
+import { AddAccount } from '../../../domain/account/add-account'
 
 export class SignUpController {
   constructor (
     private readonly emailValidator: EmailValidator,
     private readonly telephoneValidator: TelephoneValidator,
-    private readonly cpfValidator: CpfValidator
+    private readonly cpfValidator: CpfValidator,
+    private readonly addAccount: AddAccount
   ) {}
 
-  async handle (httpRequest: HttpRequest): Promise<httpResponse> {
+  async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
       const requiredFields = [
         'name',
@@ -46,6 +48,24 @@ export class SignUpController {
       if (!isCpfValid) {
         return badRequest(new InvalidParamError('cpf'))
       }
+      const {
+        name,
+        email,
+        password,
+        telephone,
+        birthDate,
+        mothersName,
+        cpf
+      } = httpRequest.body
+      await this.addAccount.add({
+        name,
+        email,
+        password,
+        telephone,
+        birthDate,
+        mothersName,
+        cpf
+      })
       return {
         statusCode: 0,
         body: null
