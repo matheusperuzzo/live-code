@@ -10,7 +10,8 @@ export class SignUpController {
       'passwordConfirmation',
       'telephone',
       'birthDate',
-      'mothersName'
+      'mothersName',
+      'cpf'
     ]
     for (const field of requiredFields) {
       if (!httpRequest.body[field]) {
