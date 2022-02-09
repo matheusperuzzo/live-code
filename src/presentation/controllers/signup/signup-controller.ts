@@ -1,3 +1,5 @@
+import { InvalidParamError } from '../../errors/invalid-param-error'
+import { MissingParamError } from '../../errors/missing-param-error'
 import { badRequest } from '../../helpers/http-helper'
 import { HttpRequest, httpResponse } from '../../protocols/http/http'
 import { EmailValidator } from '../../protocols/validators/email-validator'
@@ -18,10 +20,13 @@ export class SignUpController {
     ]
     for (const field of requiredFields) {
       if (!httpRequest.body[field]) {
-        return badRequest(field)
+        return badRequest(new MissingParamError(field))
       }
     }
-    await this.emailValidator.isEmailValid(httpRequest.body.email)
+    const isEmailValid = await this.emailValidator.isEmailValid(httpRequest.body.email)
+    if (!isEmailValid) {
+      return badRequest(new InvalidParamError('email'))
+    }
     return {
       statusCode: 0,
       body: null
