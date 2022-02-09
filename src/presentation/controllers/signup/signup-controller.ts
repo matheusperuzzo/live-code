@@ -4,9 +4,13 @@ import { ServerError } from '../../errors/server-error'
 import { badRequest, serverError } from '../../helpers/http-helper'
 import { HttpRequest, httpResponse } from '../../protocols/http/http'
 import { EmailValidator } from '../../protocols/validators/email-validator'
+import { TelephoneValidator } from '../../protocols/validators/telephone-validator'
 
 export class SignUpController {
-  constructor (private readonly emailValidator: EmailValidator) {}
+  constructor (
+    private readonly emailValidator: EmailValidator,
+    private readonly telephoneValidator: TelephoneValidator
+  ) {}
 
   async handle (httpRequest: HttpRequest): Promise<httpResponse> {
     try {
@@ -32,6 +36,7 @@ export class SignUpController {
       if (httpRequest.body.password !== httpRequest.body.passwordConfirmation) {
         return badRequest(new InvalidParamError('passwordConfirmation'))
       }
+      await this.telephoneValidator.isTelephoneValid(httpRequest.body.telephone)
       return {
         statusCode: 0,
         body: null
