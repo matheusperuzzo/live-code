@@ -1,7 +1,7 @@
 import { AddAccount } from '@domain/account/add-account'
 import { AddAccountModel, AccountModel } from '@domain/protocols/models/account'
 import { Hasher } from '../../protocols/cryptography/hasher'
-import { AddAccountRepository } from '../../protocols/db/account/add-account-repository'
+import { AddAccountRepository } from '../../protocols/db/repositories/account/add-account-repository'
 
 export class DbAddAccount implements AddAccount {
   constructor (
