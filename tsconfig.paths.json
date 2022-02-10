@@ -1,12 +1,6 @@
 {
-  "extends": "./tsconfig.paths.json",
   "compilerOptions": {
-    "outDir": "./dist",
-    "module": "CommonJS",
-    "target": "ES2020",
-    "esModuleInterop": true,
-    "allowJs": true,
-    "strictNullChecks": true,
+    "baseUrl": ".",
     "paths": {
       "@domain/*": ["./src/domain/*"],
       "@cpf-validator": ["./src/presentation/protocols/validators/cpf-validator.ts"],
@@ -20,12 +14,5 @@
       "@root/*": ["./*"],
       "@validator-protocols": ["./src/presentation/protocols/validators/index.ts"]
     }
-  },
-  "include": ["src/**/*.ts"],
-  "exclude": [
-    "node_modules/**/*"
-  ],
-  "ts-node": {
-    "require": ["tsconfig-paths/register"]
   }
 }
