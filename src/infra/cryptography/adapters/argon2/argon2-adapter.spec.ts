@@ -8,4 +8,16 @@ describe('Argon2Adapter', () => {
     await sut.hash('valid_password')
     expect(hashSpy).toHaveBeenCalledWith('valid_password')
   })
+
+  test('Should throw if Argon2 throws', async () => {
+    const sut = new Argon2Adapter()
+    jest.spyOn(argon, 'hash')
+      .mockImplementationOnce(
+        () => {
+          throw new Error()
+        }
+      )
+    const promise = sut.hash('valid_password')
+    await expect(promise).rejects.toThrow()
+  })
 })
