@@ -2,15 +2,32 @@ import { AddAccountModel } from '@domain/protocols/models/account'
 import { Hasher } from '../../protocols/cryptography/hasher'
 import { DbAddAccount } from './db-add-account'
 
+const makeHasher = (): Hasher => {
+  class HasherStub implements Hasher {
+    async hash (value: string): Promise<string> {
+      return await new Promise(resolve => resolve('hash'))
+    }
+  }
+  return new HasherStub()
+}
+
+const makeSut = (): SutTypes => {
+  const hasherStub = makeHasher()
+  const sut = new DbAddAccount(hasherStub)
+  return {
+    sut,
+    hasherStub
+  }
+}
+
+interface SutTypes {
+  sut: DbAddAccount
+  hasherStub: Hasher
+}
+
 describe('DbAddAccount UseCase', () => {
   test('Should call Hasher with valid password', async () => {
-    class HasherStub implements Hasher {
-      async hash (value: string): Promise<string> {
-        return await new Promise(resolve => resolve('hash'))
-      }
-    }
-    const hasherStub = new HasherStub()
-    const sut = new DbAddAccount(hasherStub)
+    const { sut, hasherStub } = makeSut()
     const hashSpy = jest.spyOn(hasherStub, 'hash')
     const fakeAddAccount: AddAccountModel = {
       name: 'valid_name',
