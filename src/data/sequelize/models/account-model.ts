@@ -31,11 +31,11 @@ DbAccountModel.init(
       type: DataTypes.STRING,
       allowNull: false
     },
-    birth_date: {
+    birthDate: {
       type: DataTypes.DATE,
       allowNull: false
     },
-    mothers_name: {
+    mothersName: {
       type: DataTypes.STRING,
       allowNull: false
     },
