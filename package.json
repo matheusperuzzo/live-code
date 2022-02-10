@@ -15,6 +15,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/argon2": "^0.15.0",
     "@types/jest": "^27.4.0",
     "@types/node": "^17.0.16",
     "@types/validator": "^13.7.1",
@@ -37,6 +38,7 @@
     "*.ts": "eslint --cache --fix"
   },
   "dependencies": {
+    "argon2": "^0.28.4",
     "cpf-check": "^3.0.0",
     "validator": "^13.7.0"
   }
