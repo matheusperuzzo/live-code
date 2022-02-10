@@ -26,7 +26,6 @@ describe('Account Sequelize Repository', () => {
       mothersName: 'any_mothers_name',
       cpf: 'any_cpf'
     })
-    console.log(account)
     expect(account).toBeTruthy()
     expect(account.id).toBeTruthy()
     expect(account.name).toBe('any_name')
