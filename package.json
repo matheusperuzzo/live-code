@@ -4,11 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "pretest": "NODE_ENV=test npx sequelize db:migrate",
     "test": "jest --passWithNoTests --silent --noStackTrace --runInBand",
     "test:ci": "npm test -- --coverage",
     "test:integration": "npm test -- --watch -c jest-integration-config.js",
     "test:staged": "npm test -- --findRelatedTests",
     "test:unit": "npm test -- --watch -c jest-unit-config.js",
+    "pretest:verbose": "NODE_ENV=test npx sequelize db:migrate",
     "test:verbose": "jest --passWithNoTests --runInBand"
   },
   "keywords": [],
