@@ -43,7 +43,7 @@ const makeFakeAddAccount = (): AddAccountModel => ({
   email: 'valid_email@mail.com',
   password: 'valid_password',
   telephone: 'valid_telephone',
-  birthDate: 'valid_birth_date',
+  birthDate: '2003-02-12',
   mothersName: 'valid_mothers_name',
   cpf: 'valid_cpf'
 })
@@ -54,7 +54,7 @@ const makeFakeAccount = (): AccountModel => ({
   email: 'valid_email@mail.com',
   password: 'hashed_password',
   telephone: 'valid_telephone',
-  birthDate: new Date(),
+  birthDate: new Date('2003-02-12'),
   mothersName: 'valid_mothers_name',
   cpf: 'valid_cpf'
 })
