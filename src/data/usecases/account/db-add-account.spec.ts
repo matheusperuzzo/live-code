@@ -63,8 +63,7 @@ describe('DbAddAccount UseCase', () => {
   test('Should call Hasher with valid password', async () => {
     const { sut, hasherStub } = makeSut()
     const hashSpy = jest.spyOn(hasherStub, 'hash')
-    const fakeAddAccount = makeFakeAddAccount()
-    await sut.add(fakeAddAccount)
+    await sut.add(makeFakeAddAccount())
     expect(hashSpy).toHaveBeenCalledWith('valid_password')
   })
 
@@ -74,8 +73,7 @@ describe('DbAddAccount UseCase', () => {
       .mockImplementationOnce(() => {
         throw new Error()
       })
-    const fakeAddAccount = makeFakeAddAccount()
-    const promise = sut.add(fakeAddAccount)
+    const promise = sut.add(makeFakeAddAccount())
     await expect(promise).rejects.toThrow()
   })
 
@@ -93,8 +91,13 @@ describe('DbAddAccount UseCase', () => {
       .mockImplementationOnce(() => {
         throw new Error()
       })
-    const fakeAddAccount = makeFakeAddAccount()
-    const promise = sut.add(fakeAddAccount)
+    const promise = sut.add(makeFakeAddAccount())
     await expect(promise).rejects.toThrow()
+  })
+
+  test('Should return an account on success', async () => {
+    const { sut } = makeSut()
+    const account = await sut.add(makeFakeAddAccount())
+    expect(account).toEqual(makeFakeAccount())
   })
 })
